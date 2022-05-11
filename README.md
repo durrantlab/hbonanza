@@ -1,92 +1,274 @@
-# HBonanza
+# Introduction
 
+We here present a new computer program called HBonanza (hydrogen-bond analyzer)
+that aids the analysis and visualization of hydrogen-bond networks. HBonanza,
+which can be used to analyze single structures or the many structures of a
+molecular dynamics simulation, is open source and python implemented, making it
+easily editable, customizable, and platform independent. Additionally, the
+algorithm is fast and easy to use. Unlike many other freely available
+hydrogen-bond analysis tools, HBonanza provides not only a text-based table
+describing the hydrogen-bond network, but also a Tcl script file to facilitate
+visualization in [VMD](http://www.ks.uiuc.edu/Research/vmd/), a popular
+molecular visualization program. Visualization in other programs is also
+possible.
 
+## Download
 
-## Getting started
+HBonanza is a Python script, and so requires a [Python
+interpreter](http://www.python.org/getit/). The program has been tested on
+Linux, Mac OSX, and Windows. [Download a copy of HBonanza](HBonanza_1.01.py)
+here.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Tutorial
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Introduction
 
-## Add your files
+HBonanza is a computer program that can be used to perform hydrogen-bond
+analyses of molecular dynamics trajectories. It accepts a PDB file of the
+trajectory as input, and outputs a TCL visualization script that can be loaded
+into VMD using either the Tk Console or the -e option from the command line.
+Trajectory files in other formats can be converted to the PDB format easily
+using VMD's "Save Coordinates..." option. The generated TCL file also contains
+comments to aid the user if he or she wishes to use other molecular
+visualization software.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Command-line Parameters
 
+A number of command-line options are available:
+
+<table>
+   <tr>
+      <td width="35%">
+         <tt>-help</tt>
+      </td>
+      <td>
+         Displays this help documentation.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-trajectory_filename</tt>
+      </td>
+      <td>
+         The filename containing the trajectory, in PDB format.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-output_basename</tt>
+      </td>
+      <td>
+         The initial string used to begin the names of all output files.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-single_frame_filename</tt>
+      </td>
+      <td>
+         The filename of a PDB containing a single frame, onto which hydrogen bond visualization will be mapped.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-number_processors</tt>
+      </td>
+      <td>
+         The number of processors to use when performing the hydrogen-bond analysis of the trajectory. By default, all processors on the system are used.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-hydrogen_bond_frequency_cutoff</tt>
+      </td>
+      <td>
+         In creating visualization files, discard all hydrogen bonds that are formed less frequently than this value.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-hydrogen_bond_distance_cutoff</tt>
+      </td>
+      <td>
+         Consider only hydrogen bonds whose donor-acceptor distances are less than or equal to this value.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-hydrogen_bond_angle_cutoff</tt>
+      </td>
+      <td>
+         Consider only hydrogen bonds whose hydrogen-donor-acceptor angles are less than or equal to this value.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-just_immediate_connections</tt>
+      </td>
+      <td>
+         Rather than branching out recursively to identify the entire hydrogen-bond network that supports the seed residues, consider only those residues that are immediately connected to the seeds via hydrogen bonds.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-seed_residues or -seed_residue</tt>
+      </td>
+      <td>
+         Consider only hydrogen bonds connected to residues with these IDs, or connecting residues that connect to these residues through hydrogen bonds. Multiple seed residues can be specified by evoking this tag multiple times (see example below). If no seed residues are specified, the program will visualize all hydrogen bonds, regardless of connectivity.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-write_column</tt>
+      </td>
+      <td>
+         The program writes a PDB file containing the hydrogen-bond frequencies in either the occupancy or beta columns. If this tag is set to "O", the frequencies are written to the occupancy column. If set to "B", they are written to the beta column.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-low_frequency_color_r</tt>
+      </td>
+      <td>
+         Hydrogen bonds are colored according to frequency. Colors are specified using RGB (red, green, blue) values. This tag specifies the R value of the color associated with the lowest frequency displayed (given by -hydrogen_bond_frequency_cutoff). Valid values range from 0 to 255.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-low_frequency_color_g</tt>
+      </td>
+      <td>
+         The G value of the color associated with the lowest frequency displayed. Valid values range from 0 to 255.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-low_frequency_color_b</tt>
+      </td>
+      <td>
+         The B value of the color associated with the lowest frequency displayed. Valid values range from 0 to 255.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-high_frequency_color_r</tt>
+      </td>
+      <td>
+         The R value of the color associated with 100% persistent hydrogen bonds. Valid values range from 0 to 255.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-high_frequency_color_g</tt>
+      </td>
+      <td>
+         The G value of the color associated with 100% persistent hydrogen bonds. Valid values range from 0 to 255.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>-high_frequency_color_b</tt>
+      </td>
+      <td>
+         The B value of the color associated with 100% persistent hydrogen bonds. Valid values range from 0 to 255. 
+      </td>
+   </tr>
+</table>
+
+### Description of Output Files
+
+Assuming the command-line parameter `-output_basename` is set to "output.", the
+following files will be created:
+
+<table>
+   <tr>
+      <td>
+         <tt>output.average_hbonds</tt>
+      </td>
+      <td>
+         A two-column text file describing all hydrogen bonds in the trajectory, regardless of the -hydrogen_bond_frequency_cutoff tag. The first column is a triplet indicating the atom indices of the atoms that form each hydrogen bond, and the second column is the frequency with which that particular hydrogen bonds occurs across all the frames of the trajectory.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>output.frame_by_frame_hbonds.csv</tt>
+      </td>
+      <td>
+         A comma-separated-values file (CSV file) indicating which hydrogen bonds are present in each of the frames of the trajectory. CSV files can be loaded by a number of popular spreadsheet programs, including Microsoft Excel and Open Office Calc.
+      </td>
+   </tr>
+   <tr>
+      <td>
+         <tt>output.hbond_averages_in_occupancy_column.pdb<br/>
+         OR<br/>
+         output.hbond_averages_in_beta_column.pdb</tt>
+      </td>
+      <td>
+         A pdb file identical to the file specified by the -single_frame_filename tag, except that the average frequencies with which relevant hydrogen-bond atoms appear in hydrogen bonds across the trajectory are written in the occupancy or beta column, depending on the value given by the -write_column tag. This file may facilitate visualization in programs other than VMD, if desired.
+      </td>
+   </tr>
+</table>
+
+### Examples of Usage
+
+<u>Example 1</u>: Load in a trajectory named "traj.pdb". Define hydrogen bonds
+to be those that 1) have donor-acceptor distances less than or equal to 3.0
+angstroms, 2) have hydrogen-donor-acceptor angles less than or equal to 30
+degrees, and 3) are formed in at least 50% of the trajectory frames. Show the
+visualization based on the coordinates in the single-frame PDB file
+"first_frame.pdb". Write output files using filenames that start with "output."
+One of these output filenames will be a PDB file with the hydrogen-bond
+frequencies listed in the occupancy column. Because no seed residues are
+specified, all hydrogen bonds in the trajectory will be visualized. Hydrogen
+bonds that appear in 50% of the trajectory frames will appear white, and those
+that appear in 100% of the trajectories frames will be green. The program output
+will be directed to the file "visualize.tcl" (in UNIX-based systems), which can
+then be visualized in VMD.
+
+```bash
+python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 3.0 -hydrogen_bond_angle_cutoff 30 -hydrogen_bond_frequency_cutoff 0.5 -single_frame_filename first_frame.pdb -output_basename output. -write_column O -low_frequency_color_r 255 -low_frequency_color_g 255 -low_frequency_color_b 255 -high_frequency_color_r 0 -high_frequency_color_g 255 -high_frequency_color_b 0 > visualize.tcl
+
+/path/to/VMD/executable/VMD -e visualize.tcl
 ```
-cd existing_repo
-git remote add origin https://git.durrantlab.pitt.edu/jdurrant/hbonanza.git
-git branch -M main
-git push -uf origin main
+
+<u>Example 2</u>: Same as above, except only hydrogen bonds connected to
+residues with IDs 156 and 234, or connecting residues that connect to these
+residues through hydrogen bonds, will be visualized.
+
+```bash
+python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 3.0 -hydrogen_bond_angle_cutoff 30 -hydrogen_bond_frequency_cutoff 0.5 -single_frame_filename first_frame.pdb -output_basename output. -write_column O -low_frequency_color_r 255 -low_frequency_color_g 255 -low_frequency_color_b 255 -high_frequency_color_r 0 -high_frequency_color_g 255 -high_frequency_color_b 0 -seed_residue 156 -seed_residues 234 > visualize.tcl
 ```
 
-## Integrate with your tools
+<u>Example 3</u>: If the -single_frame tag is not specified, the program will
+automatically use the first frame from the trajectory specified by the
+-trajectory_filename tag.
 
-- [ ] [Set up project integrations](https://git.durrantlab.pitt.edu/jdurrant/hbonanza/-/settings/integrations)
+```bash
+python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 3.0 -hydrogen_bond_angle_cutoff 30 -hydrogen_bond_frequency_cutoff 0.5 -output_basename output. -write_column O -low_frequency_color_r 255 -low_frequency_color_g 255 -low_frequency_color_b 255 -high_frequency_color_r 0 -high_frequency_color_g 255 -high_frequency_color_b 0 -seed_residue 156 -seed_residues 234 > visualize.tcl
+```
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+<u>Example 4</u>: If an analysis has been performed previously, it's not
+necessary to specify the -single_frame and -trajectory_filename tags, as long as
+the same -output_basename and -write_column tags are used. The trajectory
+hydrogen-bond information will be read from the previously created file
+"{output_basename}.average_hbonds", and the -single_frame tag will be
+automatically set to the previously created
+"{output_basename}.hbond_averages_in_{write_column}*_column.pdb" file.
 
-## Test and Deploy
+```bash
+python HBonanza.py -hydrogen_bond_distance_cutoff 3.0 -hydrogen_bond_angle_cutoff 30 -hydrogen_bond_frequency_cutoff 0.5 -output_basename output. -write_column O -low_frequency_color_r 255 -low_frequency_color_g 255 -low_frequency_color_b 255 -high_frequency_color_r 0 -high_frequency_color_g 255 -high_frequency_color_b 0 -seed_residue 156 -seed_residues 234 > visualize.tcl
+```
 
-Use the built-in continuous integration in GitLab.
+<!-- ## Sample Visualization
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+With only minor modifications, the default HBonanza output visualization file
+can be rendered as below. The ligand is shown in thick licorice, protein
+residues thought to participate in hydrogen-bond networks involving the ligand
+are shown in thin licorice, and the entire protein is shown in cartoon, colored
+according to secondary structure. Hydrogen bonds are colored in shades of green
+according to the frequency with which they appear in the many frames of the MD
+trajectory. The coloring ranges from white, those bonds present in 75% of the MD
+frames, to green, those bonds present in 100% of the frames. -->
 
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+<!-- <center><img src="images/sample_visualization.jpg" alt="" class="aligncenter border" /></center> -->
