@@ -231,7 +231,7 @@ python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 
 /path/to/VMD/executable/VMD -e visualize.tcl
 ```
 
-<u>Example 2</u>: Same as above, except only hydrogen bonds connected to
+<ins>Example 2</ins>: Same as above, except only hydrogen bonds connected to
 residues with IDs 156 and 234, or connecting residues that connect to these
 residues through hydrogen bonds, will be visualized.
 
@@ -239,7 +239,7 @@ residues through hydrogen bonds, will be visualized.
 python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 3.0 -hydrogen_bond_angle_cutoff 30 -hydrogen_bond_frequency_cutoff 0.5 -single_frame_filename first_frame.pdb -output_basename output. -write_column O -low_frequency_color_r 255 -low_frequency_color_g 255 -low_frequency_color_b 255 -high_frequency_color_r 0 -high_frequency_color_g 255 -high_frequency_color_b 0 -seed_residue 156 -seed_residues 234 > visualize.tcl
 ```
 
-<u>Example 3</u>: If the -single_frame tag is not specified, the program will
+<ins>Example 3</ins>: If the -single_frame tag is not specified, the program will
 automatically use the first frame from the trajectory specified by the
 -trajectory_filename tag.
 
@@ -248,7 +248,7 @@ python HBonanza.py -trajectory_filename traj.pdb -hydrogen_bond_distance_cutoff 
 ```
 
 
-<u>Example 4</u>: If an analysis has been performed previously, it's not
+<ins>Example 4</ins>: If an analysis has been performed previously, it's not
 necessary to specify the -single_frame and -trajectory_filename tags, as long as
 the same -output_basename and -write_column tags are used. The trajectory
 hydrogen-bond information will be read from the previously created file
