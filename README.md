@@ -211,7 +211,7 @@ following files will be created:
 
 ### Examples of Usage
 
-<u>Example 1</u>: Load in a trajectory named "traj.pdb". Define hydrogen bonds
+<ins>Example 1</ins>: Load in a trajectory named "traj.pdb". Define hydrogen bonds
 to be those that 1) have donor-acceptor distances less than or equal to 3.0
 angstroms, 2) have hydrogen-donor-acceptor angles less than or equal to 30
 degrees, and 3) are formed in at least 50% of the trajectory frames. Show the
