@@ -12,12 +12,17 @@ visualization in [VMD](http://www.ks.uiuc.edu/Research/vmd/), a popular
 molecular visualization program. Visualization in other programs is also
 possible.
 
+**HBonanza was [published in
+2011](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218086/) and is not actively
+maintained. The files are posted here for historical purposes. We expect the
+code is still functional if run using [Python2](https://www.python.org/downloads/release/python-2718/).**
+
 ## Download
 
 HBonanza is a Python script, and so requires a [Python
-interpreter](http://www.python.org/getit/). The program has been tested on
-Linux, Mac OSX, and Windows. [Download a copy of HBonanza](HBonanza_1.01.py)
-here.
+interpreter](https://www.python.org/downloads/release/python-2718/). The program
+has been tested on Linux, Mac OSX, and Windows. [Download a copy of
+HBonanza](HBonanza_1.01.py) here.
 
 ## Tutorial
 
